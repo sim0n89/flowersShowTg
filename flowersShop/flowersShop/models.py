@@ -34,9 +34,6 @@ class Product(models.Model):
 class Image(models.Model):
     image = models.ImageField(upload_to="images/")
 
-    def __str__(self):
-        return self.image
-
     class Meta:
         verbose_name = "Картинка"
         verbose_name_plural = "Картинки"
@@ -65,10 +62,11 @@ class Client(models.Model):
 
 class Order(models.Model):
     order_create = models.DateTimeField(auto_now_add=True)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT,  blank=True, null=True)
     time_to_delievery = models.DateTimeField(null=True)
     address = models.CharField(max_length=250)
     total_price = models.FloatField()
-    client = models.ForeignKey(Client, on_delete=models.SET_NULL, blank=True, null=True)
+    client = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
     order_status = models.CharField(default="new", max_length=250)
 
     class Meta:
@@ -76,7 +74,4 @@ class Order(models.Model):
         verbose_name_plural = "Заказы"
 
 
-class Product_to_order:
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL)
-    order = models.ForeignKey(Order, on_delete=models.PROTECT)
-    product_price = models.FloatField()
+
