@@ -9,11 +9,7 @@ from handlers.db_handlers import get_categories
 
 def start_keyboard():
     categories = get_categories()
-    button_data = [
-        ("День рождения", "Свадьба"),
-        ("В школу", "Без повода"),
-        ("Другой повод",),
-    ]
+    button_data = categories
     return ReplyKeyboardMarkup(
         keyboard=[[KeyboardButton(text=text) for text in row] for row in button_data],
         resize_keyboard=True,

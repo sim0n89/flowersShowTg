@@ -24,7 +24,7 @@ class Product(models.Model):
     images = models.ManyToManyField("Image", verbose_name="Картинки")
 
     def __str__(self):
-        return self.name
+        return f"{self.name}" 
 
     class Meta:
         verbose_name = "Товар"
@@ -37,6 +37,9 @@ class Image(models.Model):
     class Meta:
         verbose_name = "Картинка"
         verbose_name_plural = "Картинки"
+    
+    def __str__(self):
+        return self.image.name
 
 
 class Category(models.Model):
