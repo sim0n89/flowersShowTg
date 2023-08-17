@@ -6,8 +6,7 @@ from aiogram import Bot, Dispatcher, types
 from config_data.config import load_config
 
 from handlers import user_handlers
-
-
+from aiogram.fsm.storage.memory import MemoryStorage
 logger = logging.getLogger(__name__)
 
 
@@ -22,7 +21,7 @@ async def main():
     config = load_config()
 
     bot = Bot(config.telegram_bot.token, parse_mode="HTML")
-    dp = Dispatcher()
+    dp = Dispatcher(storage=MemoryStorage())
 
     dp.include_router(user_handlers.router)
 
