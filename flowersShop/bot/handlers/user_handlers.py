@@ -4,6 +4,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 
+from keyboards.user_keyboards import start_keyboard
 
 router = Router()
 
@@ -12,7 +13,7 @@ router = Router()
 async def process_start_command(message: Message):
     await message.answer(
         text="Здравствуйте!\nК какому событию готовимся? "
-             "Выберите один из вариантов, либо укажите свой."
+             "Выберите один из вариантов, либо укажите свой.",
+        reply_markup=start_keyboard()
     )
-    
-    
+
