@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher, types
 
 from config_data.config import load_config
 
-# from handlers import user_handlers
+from handlers import user_handlers
 
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ async def main():
     bot = Bot(config.telegram_bot.token, parse_mode="HTML")
     dp = Dispatcher()
 
-    # dp.include_router(user_handlers.router)
+    dp.include_router(user_handlers.router)
 
     dp.startup.register(set_main_menu)
     await bot.delete_webhook(drop_pending_updates=True)
