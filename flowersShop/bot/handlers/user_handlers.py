@@ -1,13 +1,11 @@
 from aiogram import Router
 from aiogram.filters import CommandStart, Text
 from aiogram.types import Message, CallbackQuery
-from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from states import User_state
 from keyboards.user_keyboards import start_keyboard, summ_keyboard, buy_keyboard
 from pathlib import Path
-from aiogram.types import FSInputFile
-import os
+
 router = Router()
 
 
@@ -18,32 +16,59 @@ async def process_start_command(message: Message, state: FSMContext):
         "Выберите один из вариантов, либо укажите свой.",
         reply_markup=start_keyboard(),
     )
-    await state.set_state(User_state.choosing_category)
+    await state.set_state(User_state.make_order)
 
 
-@router.message(User_state.choosing_category)
-async def category_choosen(message: Message, state: FSMContext):
-    await state.update_data(choosen_category=message.text.lower())
-   
+@router.message(User_state.make_order)
+async def order_start(message: Message, state: FSMContext):
     await message.answer(
-        text="Спасибо. Теперь, пожалуйста, выберите размер порции:",
-        reply_markup=summ_keyboard()
+        text="Введите пожалуйста имя:",
     )
-    await state.set_state(User_state.check_summ)
+    await state.set_state(User_state.make_order_adress)
 
 
-@router.message(User_state.check_summ) # не получается отправить фото
-async def choosen_summ(message: Message, state: FSMContext):
-    await state.update_data(choosen_summ=message.text.lower())
-    root_dir = Path(__file__).parent.parent.parent
-    image_path = os.path.join(root_dir, 'images', '101-gvozdika-jpg-1-1500x1500.jpg')
-    image = FSInputFile(image_path)
-   
-    await message.answer_photo(
-        photo=image,
-        caption="hello",
-        reply_markup=buy_keyboard()
+@router.message(User_state.make_order_adress)
+async def name_entered(message: Message, state: FSMContext):
+    await state.update_data(order_name=message.text)
+    await message.answer(
+        text="Введите адрес доставки:",
     )
-    data = await state.get_data()
-    await state.set_state(User_state.check_summ)
+    await state.set_state(User_state.make_order_date)
+
+@router.message(User_state.make_order_date)
+async def adress_entered(message: Message, state: FSMContext):
+    await state.update_data(order_address=message.text)
+    await message.answer(
+        text="Введите дату доставки:",
+    )
+    await state.set_state(User_state.make_order_time)
+
+@router.message(User_state.make_order_time)
+async def date_entered(message: Message, state: FSMContext):
+    await state.update_data(order_date=message.text)
+    await message.answer(
+        text="Введите время доставки:",
+    )
+    await state.set_state(User_state.make_order_success)
+
+
+@router.message(User_state.make_order_success)
+async def time_entered(message: Message, state: FSMContext):
+    await state.update_data(order_time=message.text)
+    order_data = await state.get_data()
+    await message.answer(
+        text="Поздравляем, ваш заказ оформлен! Скоро с Вами свяжется менеджер",
+    )
+    text_order = f"""
+НОВЫЙ ЗАКАЗ
+Имя: {order_data['order_name']}
+Адрес доставки: {order_data['order_address']}
+Дата доставки: {order_data['order_date']}
+Время доставки: {order_data['order_time']}
+"""
     
+
+
+
+
+
