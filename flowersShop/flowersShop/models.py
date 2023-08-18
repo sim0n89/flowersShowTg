@@ -1,17 +1,6 @@
 from django.db import models
 
 
-class Flower(models.Model):
-    flower_name = models.CharField(max_length=250)
-
-    def __str__(self):
-        return self.flower_name
-
-    class Meta:
-        verbose_name = "Цветок"
-        verbose_name_plural = "Цветы"
-
-
 class Product(models.Model):
     name = models.CharField(max_length=250, null=False, verbose_name="Название")
     created = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
@@ -19,38 +8,15 @@ class Product(models.Model):
     price = models.FloatField(null=False, verbose_name="Цена")
     description = models.TextField(verbose_name="Описание")
     status = models.BooleanField(default=True, verbose_name="Статус")
-    product_to_category = models.ManyToManyField("Category", verbose_name="Категория")
-    compound = models.ManyToManyField("Flower", verbose_name="Состав")
-    images = models.ManyToManyField("Image", verbose_name="Картинки")
+    category = models.CharField(max_length=250, default="День рождения", null=False, verbose_name="Категория")
+    image = models.ImageField(upload_to="images/", default=None, verbose_name="Изображение")
 
     def __str__(self):
-        return f"{self.name}" 
+        return f"{self.name}"
 
     class Meta:
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
-
-
-class Image(models.Model):
-    image = models.ImageField(upload_to="images/")
-
-    class Meta:
-        verbose_name = "Картинка"
-        verbose_name_plural = "Картинки"
-    
-    def __str__(self):
-        return self.image.name
-
-
-class Category(models.Model):
-    title = models.CharField(max_length=250)
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = "Категория"
-        verbose_name_plural = "Категории"
 
 
 class Client(models.Model):
@@ -65,7 +31,9 @@ class Client(models.Model):
 
 class Order(models.Model):
     order_create = models.DateTimeField(auto_now_add=True)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT,  blank=True, null=True)
+    product = models.ForeignKey(
+        Product, on_delete=models.PROTECT, blank=True, null=True
+    )
     time_to_delievery = models.DateTimeField(null=True)
     address = models.CharField(max_length=250)
     total_price = models.FloatField()
@@ -75,6 +43,3 @@ class Order(models.Model):
     class Meta:
         verbose_name = "Заказ"
         verbose_name_plural = "Заказы"
-
-
-
