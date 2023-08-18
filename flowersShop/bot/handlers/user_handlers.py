@@ -45,15 +45,6 @@ async def process_choosen_amount(message: Message, state: FSMContext):
     await message.answer(text="Фото букета в студию!")
     await state.set_state(UserStates.show_bouquet)
 
-@router.message(CommandStart())
-async def process_start_command(message: Message, state: FSMContext):
-    await message.answer(
-        text="Здравствуйте!\nК какому событию готовимся? "
-        "Выберите один из вариантов, либо укажите свой.",
-        reply_markup=start_keyboard(),
-    )
-    await state.set_state(User_state.make_order)
-
 
 @router.message(User_state.make_order)
 async def order_start(message: Message, state: FSMContext):
@@ -71,6 +62,7 @@ async def name_entered(message: Message, state: FSMContext):
     )
     await state.set_state(User_state.make_order_date)
 
+
 @router.message(User_state.make_order_date)
 async def adress_entered(message: Message, state: FSMContext):
     await state.update_data(order_address=message.text)
@@ -78,6 +70,7 @@ async def adress_entered(message: Message, state: FSMContext):
         text="Введите дату доставки:",
     )
     await state.set_state(User_state.make_order_time)
+
 
 @router.message(User_state.make_order_time)
 async def date_entered(message: Message, state: FSMContext):
