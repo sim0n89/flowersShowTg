@@ -41,7 +41,7 @@ async def choosen_summ(message: Message, state: FSMContext):
    
     await message.answer_photo(
         photo=image,
-        caption="hello"
+        caption="hello",
         reply_markup=buy_keyboard()
     )
     data = await state.get_data()
