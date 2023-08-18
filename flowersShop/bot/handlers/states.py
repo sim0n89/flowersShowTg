@@ -1,11 +1,10 @@
 from aiogram.fsm.state import State, StatesGroup
 
 
-class User_state(StatesGroup):
+class UserStates(StatesGroup):
     choosing_category = State()  # выбор категории
-    set_new_reason = State()  # новый повод
-    check_summ = State()  # выбор суммы товара
-    show_product = State()  # показать товар
+    choosing_amount = State()  # выбор суммы
+    show_bouquet = State()  # показать товар
 
     make_order = State()  # перейти к оформлению ввести имя имя
     make_order_adress = State()  # ввести адрес
@@ -15,4 +14,3 @@ class User_state(StatesGroup):
 
     order_consult = State()  # заказ консультации,
     send_consult = State()  # ввод номера телефона, отправка сообщения менеджеру
-
