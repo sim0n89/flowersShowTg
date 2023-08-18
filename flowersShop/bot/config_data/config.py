@@ -1,7 +1,7 @@
 import os
 from dataclasses import dataclass
 from dotenv import load_dotenv
-
+import json
 
 @dataclass
 class AdminIDs:
@@ -27,7 +27,8 @@ class TelegramBot:
 class Config:
     telegram_bot: TelegramBot
     # admin_ids: AdminIDs
-    db: DatabaseConfig
+    db: DatabaseConfig 
+    admins: AdminIDs
 
 
 # @dataclass
@@ -37,5 +38,5 @@ def load_config():
         telegram_bot=TelegramBot(token=os.getenv('TELEGRAM_TOKEN')),
         # admin_ids=AdminIDs(ids=os.getenv('ADMIN_IDS')),
         db=DatabaseConfig(path=os.getenv('DATABASE_NAME')),
-        admins = AdminIDs(ids=os.getenv('ADMIN_IDS'))
+        admins=AdminIDs(eval(os.getenv('ADMIN_IDS')))
     )

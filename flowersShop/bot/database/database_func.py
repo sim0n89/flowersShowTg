@@ -37,4 +37,4 @@ class Order(Table):
 
 
 def get_product(category, price):
-    
+    pass
