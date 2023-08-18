@@ -1,6 +1,17 @@
 from django.db import models
 
 
+class Category(models.Model):
+    title = models.CharField(max_length=250, null=False, verbose_name="Название")
+
+    def __str__(self):
+        return f"{self.title}"
+
+    class Meta:
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+
+
 class Product(models.Model):
     name = models.CharField(max_length=250, null=False, verbose_name="Название")
     created = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
@@ -8,8 +19,10 @@ class Product(models.Model):
     price = models.FloatField(null=False, verbose_name="Цена")
     description = models.TextField(verbose_name="Описание")
     status = models.BooleanField(default=True, verbose_name="Статус")
-    category = models.CharField(max_length=250, default="День рождения", null=False, verbose_name="Категория")
-    image = models.ImageField(upload_to="images/", default=None, verbose_name="Изображение")
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)
+    image = models.ImageField(
+        upload_to="images/", default=None, verbose_name="Изображение"
+    )
 
     def __str__(self):
         return f"{self.name}"
