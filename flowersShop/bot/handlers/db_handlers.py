@@ -7,8 +7,8 @@ from os import path
 
 
 config = load_config()
-
-db_path = os.path.join(config.db.path)
+root_dir = Path(__file__).parent.parent.parent
+db_path = os.path.join(root_dir,config.db.path)
 conn = sqlite3.connect(db_path, check_same_thread=False)
 
 

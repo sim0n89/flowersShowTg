@@ -5,7 +5,9 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from states import User_state
 from keyboards.user_keyboards import start_keyboard, summ_keyboard, buy_keyboard
-
+from pathlib import Path
+from aiogram.types import InputFile
+import os
 router = Router()
 
 
@@ -30,13 +32,15 @@ async def category_choosen(message: Message, state: FSMContext):
     await state.set_state(User_state.check_summ)
 
 
-@router.message(User_state.check_summ)
+@router.message(User_state.check_summ) # не получается отправить фото
 async def choosen_summ(message: Message, state: FSMContext):
     await state.update_data(choosen_summ=message.text.lower())
-    await message.answer(
+    root_dir = Path(__file__).parent.parent.parent
+    image_path = os.path.join(root_dir, 'images', '101-gvozdika-jpg-1-1500x1500.jpg')
+    await message.answer_photo(
+        photo=photo,
         reply_markup=buy_keyboard()
     )
     data = await state.get_data()
-    
     await state.set_state(User_state.check_summ)
     
