@@ -37,4 +37,5 @@ def load_config():
         telegram_bot=TelegramBot(token=os.getenv('TELEGRAM_TOKEN')),
         # admin_ids=AdminIDs(ids=os.getenv('ADMIN_IDS')),
         db=DatabaseConfig(path=os.getenv('DATABASE_NAME')),
+        admins = AdminIDs(ids=os.getenv('ADMIN_IDS'))
     )

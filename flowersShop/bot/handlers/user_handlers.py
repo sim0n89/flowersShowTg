@@ -1,12 +1,14 @@
-from aiogram import Router
+from aiogram import Bot, Router
 from aiogram.filters import CommandStart, Text
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from handlers.states import UserStates
 from keyboards import user_keyboards
+from config_data.config import load_config
 
 router = Router()
-
+config = load_config()
+admin_ids = config.admins
 
 @router.message(CommandStart())
 async def process_start_command(message: Message, state: FSMContext):
@@ -17,7 +19,7 @@ async def process_start_command(message: Message, state: FSMContext):
     )
     user_id = int(message.from_user.id)
     await state.update_data(user_id=user_id)
-    await state.set_state(UserStates.choosing_category)
+    await state.set_state(UserStates.make_order)
 
 
 @router.message(UserStates.choosing_category, Text(text=["Другой повод"]))
@@ -89,17 +91,21 @@ async def date_entered(message: Message, state: FSMContext):
 
 
 @router.message(UserStates.make_order_success)
-async def time_entered(message: Message, state: FSMContext):
+async def time_entered(message: Message, state: FSMContext, bot: Bot):
     await state.update_data(order_time=message.text)
     order_data = await state.get_data()
     await message.answer(
         text="Поздравляем, ваш заказ оформлен! Скоро с Вами свяжется менеджер",
     )
+		
     text_order = f"""
         НОВЫЙ ЗАКАЗ
+        
+        Букет: 
         Имя: {order_data['order_name']}
         Адрес доставки: {order_data['order_address']}
         Дата доставки: {order_data['order_date']}
         Время доставки: {order_data['order_time']}
         """
-    message.send
+    for id in admin_ids:
+    	await bot.send_message(chat_id = id, text=text_order)
