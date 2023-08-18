@@ -19,7 +19,7 @@ async def process_start_command(message: Message, state: FSMContext):
     )
     user_id = int(message.from_user.id)
     await state.update_data(user_id=user_id)
-    await state.set_state(UserStates.make_order)
+    await state.set_state(UserStates.choosing_category)
 
 
 @router.message(UserStates.choosing_category, Text(text=["Другой повод"]))
