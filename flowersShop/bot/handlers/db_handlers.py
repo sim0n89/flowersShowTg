@@ -8,12 +8,5 @@ from os import path
 
 config = load_config()
 root_dir = Path(__file__).parent.parent.parent
-db_path = os.path.join(root_dir,config.db.path)
+db_path = os.path.join(root_dir, config.db.path)
 conn = sqlite3.connect(db_path, check_same_thread=False)
-
-
-def get_categories():
-    cursor = conn.cursor()
-    sql = f"SELECT title FROM flowersShop_category"
-    categories = cursor.execute(sql).fetchall()
-    return categories

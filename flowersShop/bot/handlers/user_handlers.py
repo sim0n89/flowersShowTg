@@ -1,13 +1,10 @@
 from aiogram import Router
 from aiogram.filters import CommandStart, Text
-from aiogram.types import Message, CallbackQuery
-from aiogram.fsm.state import State, StatesGroup
+from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
-from states import User_state
-from keyboards.user_keyboards import start_keyboard, summ_keyboard, buy_keyboard
-from pathlib import Path
-from aiogram.types import FSInputFile
-import os
+from handlers.states import UserStates
+from keyboards import user_keyboards
+
 router = Router()
 
 
@@ -16,34 +13,34 @@ async def process_start_command(message: Message, state: FSMContext):
     await message.answer(
         text="Здравствуйте!\nК какому событию готовимся? "
         "Выберите один из вариантов, либо укажите свой.",
-        reply_markup=start_keyboard(),
+        reply_markup=user_keyboards.start_keyboard(),
     )
-    await state.set_state(User_state.choosing_category)
+    user_id = int(message.from_user.id)
+    await state.update_data(user_id=user_id)
+    await state.set_state(UserStates.choosing_category)
 
 
-@router.message(User_state.choosing_category)
-async def category_choosen(message: Message, state: FSMContext):
-    await state.update_data(choosen_category=message.text.lower())
-   
+@router.message(UserStates.choosing_category, Text(text=["Другой повод"]))
+async def process_other_reason_category(message: Message, state: FSMContext):
+    await message.answer(text="Напишите ваш повод, пожалуйста:")
+    await state.set_state(UserStates.choosing_category)
+
+
+@router.message(UserStates.choosing_category)
+async def process_category_choosen(message: Message, state: FSMContext):
+    category = message.text.lower().strip()
+    await state.update_data(choosen_category=category)
+
     await message.answer(
-        text="Спасибо. Теперь, пожалуйста, выберите размер порции:",
-        reply_markup=summ_keyboard()
+        text="На какую сумму расчитываете?",
+        reply_markup=user_keyboards.amount_keyboard(),
     )
-    await state.set_state(User_state.check_summ)
+    await state.set_state(UserStates.choosing_amount)
 
 
-@router.message(User_state.check_summ) # не получается отправить фото
-async def choosen_summ(message: Message, state: FSMContext):
-    await state.update_data(choosen_summ=message.text.lower())
-    root_dir = Path(__file__).parent.parent.parent
-    image_path = os.path.join(root_dir, 'images', '101-gvozdika-jpg-1-1500x1500.jpg')
-    image = FSInputFile(image_path)
-   
-    await message.answer_photo(
-        photo=image,
-        caption="hello",
-        reply_markup=buy_keyboard()
-    )
-    data = await state.get_data()
-    await state.set_state(User_state.check_summ)
-    
+@router.message(UserStates.choosing_amount)
+async def process_choosen_amount(message: Message, state: FSMContext):
+    amount = message.text.lower().strip()
+    await state.update_data(choosen_summ=amount)
+    await message.answer(text="Фото букета в студию!")
+    await state.set_state(UserStates.show_bouquet)
