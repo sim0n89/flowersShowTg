@@ -97,7 +97,6 @@ async def time_entered(message: Message, state: FSMContext, bot: Bot):
     await message.answer(
         text="Поздравляем, ваш заказ оформлен! Скоро с Вами свяжется менеджер",
     )
-		
     text_order = f"""
         НОВЫЙ ЗАКАЗ
         
