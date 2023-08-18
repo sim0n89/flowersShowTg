@@ -52,43 +52,43 @@ async def process_start_command(message: Message, state: FSMContext):
         "Выберите один из вариантов, либо укажите свой.",
         reply_markup=start_keyboard(),
     )
-    await state.set_state(User_state.make_order)
+    await state.set_state(UserStates.make_order)
 
 
-@router.message(User_state.make_order)
+@router.message(UserStates.make_order)
 async def order_start(message: Message, state: FSMContext):
     await message.answer(
         text="Введите пожалуйста имя:",
     )
-    await state.set_state(User_state.make_order_adress)
+    await state.set_state(UserStates.make_order_adress)
 
 
-@router.message(User_state.make_order_adress)
+@router.message(UserStates.make_order_adress)
 async def name_entered(message: Message, state: FSMContext):
     await state.update_data(order_name=message.text)
     await message.answer(
         text="Введите адрес доставки:",
     )
-    await state.set_state(User_state.make_order_date)
+    await state.set_state(UserStates.make_order_date)
 
-@router.message(User_state.make_order_date)
+@router.message(UserStates.make_order_date)
 async def adress_entered(message: Message, state: FSMContext):
     await state.update_data(order_address=message.text)
     await message.answer(
         text="Введите дату доставки:",
     )
-    await state.set_state(User_state.make_order_time)
+    await state.set_state(UserStates.make_order_time)
 
-@router.message(User_state.make_order_time)
+@router.message(UserStates.make_order_time)
 async def date_entered(message: Message, state: FSMContext):
     await state.update_data(order_date=message.text)
     await message.answer(
         text="Введите время доставки:",
     )
-    await state.set_state(User_state.make_order_success)
+    await state.set_state(UserStates.make_order_success)
 
 
-@router.message(User_state.make_order_success)
+@router.message(UserStates.make_order_success)
 async def time_entered(message: Message, state: FSMContext):
     await state.update_data(order_time=message.text)
     order_data = await state.get_data()
@@ -96,9 +96,10 @@ async def time_entered(message: Message, state: FSMContext):
         text="Поздравляем, ваш заказ оформлен! Скоро с Вами свяжется менеджер",
     )
     text_order = f"""
-НОВЫЙ ЗАКАЗ
-Имя: {order_data['order_name']}
-Адрес доставки: {order_data['order_address']}
-Дата доставки: {order_data['order_date']}
-Время доставки: {order_data['order_time']}
-"""
+        НОВЫЙ ЗАКАЗ
+        Имя: {order_data['order_name']}
+        Адрес доставки: {order_data['order_address']}
+        Дата доставки: {order_data['order_date']}
+        Время доставки: {order_data['order_time']}
+        """
+    message.send
