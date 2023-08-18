@@ -37,10 +37,11 @@ async def choosen_summ(message: Message, state: FSMContext):
     await state.update_data(choosen_summ=message.text.lower())
     root_dir = Path(__file__).parent.parent.parent
     image_path = os.path.join(root_dir, 'images', '101-gvozdika-jpg-1-1500x1500.jpg')
-    await message.answer_photo(
-        photo=photo,
-        reply_markup=buy_keyboard()
-    )
+    with open (image_path, 'rb') as image:
+        await message.answer_photo(
+            photo=image,
+            reply_markup=buy_keyboard()
+        )
     data = await state.get_data()
     await state.set_state(User_state.check_summ)
     
