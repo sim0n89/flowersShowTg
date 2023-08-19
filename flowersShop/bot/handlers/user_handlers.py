@@ -10,6 +10,7 @@ router = Router()
 config = load_config()
 admin_ids = config.admins
 
+
 @router.message(CommandStart())
 async def process_start_command(message: Message, state: FSMContext):
     await message.answer(
@@ -47,6 +48,7 @@ async def process_choosen_amount(message: Message, state: FSMContext):
     await message.answer(text="Фото букета в студию!")
     await state.set_state(UserStates.show_bouquet)
 
+
 @router.message(CommandStart())
 async def process_start_command(message: Message, state: FSMContext):
     await message.answer(
@@ -73,6 +75,7 @@ async def name_entered(message: Message, state: FSMContext):
     )
     await state.set_state(UserStates.make_order_date)
 
+
 @router.message(UserStates.make_order_date)
 async def adress_entered(message: Message, state: FSMContext):
     await state.update_data(order_address=message.text)
@@ -80,6 +83,7 @@ async def adress_entered(message: Message, state: FSMContext):
         text="Введите дату доставки:",
     )
     await state.set_state(UserStates.make_order_time)
+
 
 @router.message(UserStates.make_order_time)
 async def date_entered(message: Message, state: FSMContext):
@@ -107,4 +111,35 @@ async def time_entered(message: Message, state: FSMContext, bot: Bot):
         Время доставки: {order_data['order_time']}
         """
     for id in admin_ids:
-    	await bot.send_message(chat_id = id, text=text_order)
+        await bot.send_message(chat_id=id, text=text_order)
+
+
+@router.message(CommandStart())
+async def process_start_command(message: Message, state: FSMContext):
+    await message.answer(
+        text="Заказать консультацию?",
+        reply_markup=user_keyboards.start_keyboard(),
+    )
+    user_id = int(message.from_user.id)
+    await state.update_data(user_id=user_id)
+    await state.set_state(UserStates.order_consult)
+
+
+@router.message(UserStates.order_consult)
+async def get_phone_consult(message: Message, state: FSMContext):
+    await message.answer(
+        text="Укажите ваш номер:",
+    )
+    await state.set_state(UserStates.send_consult)
+
+
+@router.message(UserStates.send_consult)
+async def time_entered(message: Message, state: FSMContext, bot: Bot):
+    await state.update_data(consult_phone=message.text)
+    consult_data = await state.get_data()
+    await message.answer(
+        text="В ближайшее время с вами свяжется наш флорист",
+    )
+
+    for id in admin_ids:
+        await bot.send_message(chat_id=id, text=consult_data)
