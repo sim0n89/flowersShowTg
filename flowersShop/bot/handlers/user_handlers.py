@@ -69,6 +69,7 @@ async def process_choosen_amount(message: Message, state: FSMContext):
         root_dir = Path(__file__).parent.parent.parent
         image_path = os.path.join(root_dir, product['image'])
         image = FSInputFile(image_path)
+        print(image)
         await state.update_data(last_shown=product['id'])
         await state.update_data(last_shown_name=product['name'])
         await state.update_data(price=product['price'])
@@ -176,11 +177,20 @@ async def get_phone_consult(message: Message, state: FSMContext):
 async def time_entered(message: Message, state: FSMContext, bot: Bot):
     await state.update_data(consult_phone=message.text)
     consult_data = await state.get_data()
+    text = "В ближайшее время с вами свяжется наш флорист"
     await message.answer(
-        text="В ближайшее время с вами свяжется наш флорист, а пока можете посмотреть фото букетов из коллекции\nТУТ ФОТО РАНДОМНОГО БУКЕТА",
+        text=text,
         reply_markup=user_keyboards.collection_keyboard()
     )
+    text_consult = f"""
+        Заявка на консультацию:
 
-    # for id in admin_ids:
-    #     await bot.send_message(chat_id=id, text=consult_data)
+    Выбранная категория: {consult_data['choosen_category']}
+    Стоимость: {consult_data['amount']}
+    Номер для связи: {consult_data['consult_phone']}
+    """
 
+    for id in admin_ids:
+        await bot.send_message(chat_id=id, text=text_consult)
+
+    await state.set_state(UserStates.show_bouquet)
