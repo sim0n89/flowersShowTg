@@ -5,13 +5,12 @@ from aiogram.types import (
     InlineKeyboardButton,
 )
 
+from database.database_sql_func import get_categories
 
 def start_keyboard():
-    button_data = (
-        ("День рождения", "Свадьба"),
-        ("В школу", "Без повода"),
-        ("Другой повод",),
-    )
+    categories = get_categories()
+    button_data = categories
+    button_data.append(('Другой повод',))
     return ReplyKeyboardMarkup(
         keyboard=[[KeyboardButton(text=text) for text in row] for row in button_data],
         resize_keyboard=True,

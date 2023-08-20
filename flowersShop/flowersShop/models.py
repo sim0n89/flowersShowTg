@@ -19,7 +19,7 @@ class Product(models.Model):
     price = models.FloatField(null=False, verbose_name="Цена")
     description = models.TextField(verbose_name="Описание")
     status = models.BooleanField(default=True, verbose_name="Статус")
-    category = models.ForeignKey(Category, on_delete=models.PROTECT)
+    category = models.ManyToManyField(Category)
     image = models.ImageField(
         upload_to="images/", default=None, verbose_name="Изображение"
     )
