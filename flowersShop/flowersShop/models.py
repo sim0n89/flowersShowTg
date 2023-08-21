@@ -41,18 +41,24 @@ class Client(models.Model):
         verbose_name = "Клиент"
         verbose_name_plural = "Клиенты"
 
+    def __str__(self):
+        return f"{self.tlg_id}"
+
 
 class Order(models.Model):
     order_create = models.DateTimeField(auto_now_add=True)
     product = models.ForeignKey(
         Product, on_delete=models.PROTECT, blank=True, null=True
     )
-    time_to_delievery = models.DateTimeField(null=True)
-    address = models.CharField(max_length=250)
-    total_price = models.FloatField()
+    time_to_delievery = models.DateTimeField(null=True, verbose_name="Время доставки")
+    address = models.CharField(max_length=250, verbose_name="Адрес достаки")
+    total_price = models.FloatField(verbose_name="Сумма заказа")
     client = models.ForeignKey(Client, on_delete=models.PROTECT, blank=True, null=True)
     order_status = models.CharField(default="new", max_length=250)
 
     class Meta:
         verbose_name = "Заказ"
         verbose_name_plural = "Заказы"
+
+    def __str__(self):
+        return f"{self.product} {self.time_to_delievery} {self.address}"

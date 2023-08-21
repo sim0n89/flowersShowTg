@@ -91,6 +91,7 @@ def new_order(user_tlg, product_id, price, adress, date, time):
     conn = create_connection()
     cursor = conn.cursor()
     date_to_delievery = f"{date} {time}" 
+    date_to_delievery = datetime.datetime.strptime(date_to_delievery,"%d.%m.%Y %H:%M")
     with conn:
         sql = """INSERT INTO flowersShop_order (order_create, time_to_delievery, address, total_price, order_status, client_id, product_id) 
         VALUES (?,?,?,?,?,?,?)"""
