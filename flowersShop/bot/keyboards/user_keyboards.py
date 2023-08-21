@@ -38,3 +38,10 @@ def buy_keyboard():
         keyboard=[[KeyboardButton(text=text) for text in row] for row in button_data],
         resize_keyboard=True,
     )
+
+def collection_keyboard():
+    button_data = [("Посмотреть всю коллекцию",),]
+    return ReplyKeyboardMarkup(
+        keyboard=[[KeyboardButton(text=text) for text in row] for row in button_data],
+        resize_keyboard=True,
+    )
